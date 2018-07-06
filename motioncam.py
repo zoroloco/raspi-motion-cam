@@ -6,6 +6,8 @@ from gpiozero import MotionSensor
 
 imgDir = "/mnt/security/motioncam0"
 
+with picamera.PiCamera() as camera:
+
 def initCamera(camera):
     #camera settings
     #camera.resolution            = (SCREEN_WIDTH, SCREEN_HEIGHT)
@@ -39,19 +41,18 @@ def motion_stop():
     print("motion stopped")
 
 def monitor():
-    with picamera.PiCamera() as camera:
-        try:
-            initCamera(camera)
-            pir = MotionSensor(21)
-            pir.when_motion = motion_start
-            pir.when_no_motion = motion_stop
+    try:
+        initCamera(camera)
+        pir = MotionSensor(21)
+        pir.when_motion = motion_start
+        pir.when_no_motion = motion_stop
 
-            while True:
-                pir.wait_for_motion()
-        except BaseException:
-            print("ERROR: unhandled exception")
-        finally:
-            camera.close()
+        while True:
+            pir.wait_for_motion()
+    except BaseException:
+        print("ERROR: unhandled exception")
+    finally:
+        camera.close()
 
 monitor()
 exit()
